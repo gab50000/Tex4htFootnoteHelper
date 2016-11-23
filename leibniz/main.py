@@ -14,9 +14,11 @@ def pdflatex():
     Finally, call find_all_footnotes_in_html"""
     
     latex_file = set_footnote_markers_in_tex.main()
-    child = pexpect.spawn("/usr/bin/pdflatex", [latex_file])
-    child.expect_exact("?")
-    child.sendline("R")
+    child = pexpect.spawn("/usr/bin/htlatex", [latex_file, "xhtml"])
+    for i in range(3):
+        child.expect_exact("?")
+        child.sendline("R")
+    print(child.read())
     find_all_footnotes_in_html.main()
 
 
