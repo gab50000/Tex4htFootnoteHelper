@@ -19,7 +19,8 @@ setup(name='LatexFootnotesToHTML',
       tests_require=['nose'],
       entry_points={
           'console_scripts': ['tag=leibniz.set_footnote_markers_in_tex:main',
-                              'marker2modal=leibniz.find_all_footnotes_in_html:main'
+                              'marker2modal=leibniz.find_all_footnotes_in_html:main',
+                              'compile_latex=leibniz.main:main'
                               ],
       },
       include_package_data=True,
