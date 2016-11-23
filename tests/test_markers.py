@@ -18,3 +18,8 @@ class TestFootnoteMarkers(unittest.TestCase):
         result = insert.insert_markers(test_string)
         print(result)
         self.assertTrue(r"!!EDTEXTSTART!!(1)Some content with {more {} brackets {{}} inside}!!EDTEXTEND!!" in result)
+        
+    def test_nested_edtexts(self):
+        test_string = r"""Blablablub\edtext{Some content with {more {} brackets \edtext{and another
+edtext }\lemma{edtext}\Cfootnote{deep inside} {{}} inside}}\lemma{abc}\Afootnote{hallo}"""
+        

@@ -3,15 +3,21 @@ import sys
 import pexpect
 import plac
 
+from . import set_footnote_markers_in_tex
+from . import find_all_footnotes_in_html
 
-def pdflatex(latex_file):
-    """Run pdflatex without interruption"""
+
+def pdflatex():
+    """
+    Call set_footnote_markers_in_tex,
+    then run pdflatex without interruption.
+    Finally, call find_all_footnotes_in_html"""
+    
+    latex_file = set_footnote_markers_in_tex.main()
     child = pexpect.spawn("/usr/bin/pdflatex", [latex_file])
-    # child.logfile = sys.stdout
     child.expect_exact("?")
     child.sendline("R")
-    print(child.before.decode("utf-8"))
-    print(child.after.decode("utf-8"))
+    find_all_footnotes_in_html.main()
 
 
 def main(*args):

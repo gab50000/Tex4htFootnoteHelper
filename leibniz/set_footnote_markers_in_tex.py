@@ -133,10 +133,12 @@ def main(*args):
         with open(filepath_modified, "w") as f:
             f.write(text_modified)
     fpath_modified = get_filename_modified(root_document)
-    print("Speichere modifiziertes Root Dokument mit Verweisen zu den modifizierten Tex-Dateien"
+    print("Speichere modifiziertes Root Dokument mit Verweisen zu den modifizierten Tex-Dateien "
           "nach", fpath_modified)
     with open(fpath_modified, "w") as f:
         f.write(root_content)
+        
+    return fpath_modified
 
 
 if __name__ == "__main__":
