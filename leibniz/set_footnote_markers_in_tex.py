@@ -55,7 +55,7 @@ def find_next_edtext(text):
     if match:
         _, position = match.span()
     else:
-        return -1
+        return text,
     
     pre_edtext_content = text[:position]
     content, remaining = get_bracket_content(text[position:])
@@ -64,7 +64,7 @@ def find_next_edtext(text):
     else:
         content = content,
         
-    return (pre_edtext_content, "!!EDTEXTSTART!!", content, "!!EDTEXTEND!!") + find_next_edtext(remaining)
+    return (pre_edtext_content, "!!EDTEXTSTART!!") + content + ("!!EDTEXTEND!!",) + find_next_edtext(remaining)
 
 
 class Insert:
@@ -127,9 +127,7 @@ def main(*args):
         fname_modified = get_filename_modified(filename)
         text = get_text_without_comments(tf)
         modified = find_next_edtext(text)
-        import ipdb
-        ipdb.set_trace()
-        #  text_modified = insert.insert_markers(text)
+        text_modified = "".join(modified)
         root_content = re.sub(re.escape(filename), fname_modified, root_content)
         filepath_modified = os.path.join(directory, fname_modified)
         print("Modifizierte Version wird gespeichert in", filepath_modified)
