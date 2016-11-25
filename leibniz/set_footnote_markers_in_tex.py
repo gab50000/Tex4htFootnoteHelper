@@ -2,7 +2,6 @@
 
 import os
 import re
-import ipdb
 
 
 tex_files = [
@@ -31,7 +30,6 @@ def get_bracket_content(text):
             if next_lbracket_index == -1:
                 if next_rbracket_index == -1:
                     print("uh oh")
-                    ipdb.set_trace()
                 else:
                     next_bracket_index = next_rbracket_index
             else:
@@ -62,9 +60,11 @@ def find_next_edtext(text):
     pre_edtext_content = text[:position]
     content, remaining = get_bracket_content(text[position:])
     if "edtext" in content:
-        pass
+        content = find_next_edtext(content)
+    else:
+        content = content,
         
-    return pre_edtext_content, content, remaining
+    return (pre_edtext_content, "!!EDTEXTSTART!!", content, "!!EDTEXTEND!!") + find_next_edtext(remaining)
 
 
 class Insert:
@@ -87,7 +87,7 @@ class Insert:
             subtexts.append("!!EDTEXTSTART!!({:})".format(self.counter))
             content, remaining_text = get_bracket_content(remaining_text[position:])
             if "edtext" in content:
-                print(content)
+                pass
             subtexts.append(content)
             subtexts.append("!!EDTEXTEND!!}")
             remaining_text = remaining_text[1:]
@@ -126,7 +126,10 @@ def main(*args):
         directory, filename = os.path.split(tf)
         fname_modified = get_filename_modified(filename)
         text = get_text_without_comments(tf)
-        text_modified = insert.insert_markers(text)
+        modified = find_next_edtext(text)
+        import ipdb
+        ipdb.set_trace()
+        #  text_modified = insert.insert_markers(text)
         root_content = re.sub(re.escape(filename), fname_modified, root_content)
         filepath_modified = os.path.join(directory, fname_modified)
         print("Modifizierte Version wird gespeichert in", filepath_modified)
