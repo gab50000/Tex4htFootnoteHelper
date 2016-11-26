@@ -100,6 +100,7 @@ def check_that_all_footnotes_are_in_html(text):
                         \!\!FOOTNOTEEND\!\!    # Footnote end marker
                         (?:\<[^\<\>]*?\>)?     # First tag after footnote
                         """
+
     numbers = [int(n) for n in re.findall(search_string, text, flags=re.VERBOSE | re.DOTALL)]
     all_numbers = set(range(1, max(numbers) + 1))
     missing_numbers = sorted(all_numbers - set(numbers))
