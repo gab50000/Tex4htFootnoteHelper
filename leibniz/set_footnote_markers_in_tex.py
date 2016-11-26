@@ -50,8 +50,11 @@ def get_bracket_content(text):
     return text[start_position: position-1], text[position-1:]
     
     
-def find_next_edtext(text):
-    match = re.search(r"\\edtext\{", text, flags=re.DOTALL)
+def find_next_environment(search_string, name, text):
+    expr = r"\\%s\{" % search_string
+    start_marker = "!!!%sSTART!!!" % name.upper()
+    end_marker = "!!!%sEND!!!" % name.upper()
+    match = re.search(expr, text, flags=re.DOTALL)
     if match:
         _, position = match.span()
     else:
@@ -59,12 +62,13 @@ def find_next_edtext(text):
     
     pre_edtext_content = text[:position]
     content, remaining = get_bracket_content(text[position:])
-    if "edtext" in content:
-        content = find_next_edtext(content)
+    if name in content:
+        content = find_next_environment(search_string, name, content)
     else:
         content = content,
         
-    return (pre_edtext_content, "!!EDTEXTSTART!!") + content + ("!!EDTEXTEND!!",) + find_next_edtext(remaining)
+    return (pre_edtext_content, start_marker) + content + (end_marker,) \
+            + find_next_environment(search_string, name, remaining)
 
 
 class Insert:
@@ -126,7 +130,9 @@ def main(*args):
         directory, filename = os.path.split(tf)
         fname_modified = get_filename_modified(filename)
         text = get_text_without_comments(tf)
-        modified = find_next_edtext(text)
+        modified = find_next_environment(r"edtext", "edtext", text)
+        text_modified = "".join(modified)
+        modified = find_next_environment(r"[ABC]footnote", "footnote", text_modified)
         text_modified = "".join(modified)
         root_content = re.sub(re.escape(filename), fname_modified, root_content)
         filepath_modified = os.path.join(directory, fname_modified)
