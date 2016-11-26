@@ -82,9 +82,31 @@ def get_text_without_comments(filename):
         text = f.readlines()
     return "".join([line for line in text if not line.lstrip().startswith("%")])
 
+class Enumerator:
+
+    def __init__(self, expr):
+        self.counter = 1
+        self.expr = expr
+
+    def enumerate_markers(self, text):
+        matches = re.finditer(self.expr, text)
+        indices = [0]
+        for m in matches:
+            indices.append(m.span()[1])
+
+        modified = []
+
+        for i, (start, end) in enumerate(zip(indices[:-1], indices[1:]), self.counter):
+            modified.append(text[start:end])
+            modified.append("({:02d})".format(i))
+        self.counter = i + 1
+        return "".join(modified)
+
 
 def main(*args):
     root_content = open(root_document, "r").read()
+    fn_enumerator = Enumerator(r"!!FOOTNOTESTART!!")
+    ed_enumerator = Enumerator(r"!!EDTEXTSTART!!")
 
     for tf in tex_files:
         print("Markiere footnotes in", tf)
@@ -95,6 +117,8 @@ def main(*args):
         text_modified = "".join(modified)
         modified = find_next_environment(r"[ABC]footnote", "footnote", text_modified)
         text_modified = "".join(modified)
+        text_modified = fn_enumerator.enumerate_markers(text_modified)
+        text_modified = ed_enumerator.enumerate_markers(text_modified)
         root_content = re.sub(re.escape(filename), fname_modified, root_content)
         filepath_modified = os.path.join(directory, fname_modified)
         print("Modifizierte Version wird gespeichert in", filepath_modified)
