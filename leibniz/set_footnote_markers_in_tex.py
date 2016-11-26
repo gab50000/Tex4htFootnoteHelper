@@ -50,7 +50,7 @@ def get_bracket_content(text):
     return text[start_position: position-1], text[position-1:]
     
     
-def find_next_environment(search_string, name, text):
+def find_next_environment(search_string, name, text, verbose=False):
     expr = r"\\%s\{" % search_string
     start_marker = "!!%sSTART!!" % name.upper()
     end_marker = "!!%sEND!!" % name.upper()
@@ -99,7 +99,8 @@ class Enumerator:
         for i, (start, end) in enumerate(zip(indices[:-1], indices[1:]), self.counter):
             modified.append(text[start:end])
             modified.append("({:02d})".format(i))
-        self.counter = i + 1
+            self.counter += 1
+        modified.append(text[end:])
         return "".join(modified)
 
 
