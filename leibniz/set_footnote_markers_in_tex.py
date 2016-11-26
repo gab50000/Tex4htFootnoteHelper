@@ -71,44 +71,6 @@ def find_next_environment(search_string, name, text):
             + find_next_environment(search_string, name, remaining)
 
 
-class Insert:
-    
-    def __init__(self):
-        self.counter = 1
-
-    def insert_markers(self, text):
-        subtexts = []
-        remaining_text = text
-
-        while True:
-            match = re.search(r"\\edtext\{", remaining_text, flags=re.DOTALL)
-            if match:
-                _, position = match.span()
-            else:
-                break
-
-            subtexts.append(remaining_text[:position])
-            subtexts.append("!!EDTEXTSTART!!({:})".format(self.counter))
-            content, remaining_text = get_bracket_content(remaining_text[position:])
-            if "edtext" in content:
-                pass
-            subtexts.append(content)
-            subtexts.append("!!EDTEXTEND!!}")
-            remaining_text = remaining_text[1:]
-
-            _, position = re.search(r"\\[ABC]footnote\{", remaining_text, flags=re.DOTALL).span()
-            subtexts.append(remaining_text[:position])
-            subtexts.append("!!FOOTNOTESTART!!({:})".format(self.counter))
-            content, remaining_text = get_bracket_content(remaining_text[position:])
-            subtexts.append(content)
-            subtexts.append("!!FOOTNOTEEND!!")
-
-            self.counter += 1
-
-        subtexts.append(remaining_text)
-        return "".join(subtexts)
-
-
 def get_filename_modified(fname):
         fname_base, fname_ext = os.path.splitext(fname)
         fname_modified = fname_base + "_modified" + fname_ext
@@ -123,7 +85,6 @@ def get_text_without_comments(filename):
 
 def main(*args):
     root_content = open(root_document, "r").read()
-    insert = Insert()
 
     for tf in tex_files:
         print("Markiere footnotes in", tf)
