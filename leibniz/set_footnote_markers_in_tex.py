@@ -52,8 +52,8 @@ def get_bracket_content(text):
     
 def find_next_environment(search_string, name, text):
     expr = r"\\%s\{" % search_string
-    start_marker = "!!!%sSTART!!!" % name.upper()
-    end_marker = "!!!%sEND!!!" % name.upper()
+    start_marker = "!!%sSTART!!" % name.upper()
+    end_marker = "!!%sEND!!" % name.upper()
     match = re.search(expr, text, flags=re.DOTALL)
     if match:
         _, position = match.span()
