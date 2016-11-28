@@ -47,7 +47,7 @@ def change_css_link(text, css_name):
 def insert_modal(text, index):
     search_string = r"""(\<[^\<\>]*?\>)?    # Last tag before footnote
                      \!\!FOOTNOTESTART\!\!  # Footnote marker
-                     \({idx:}\)
+                     \({idx:02d}\)
                      (.*?)                  # Footnote content
                      \!\!FOOTNOTEEND\!\!    # Footnote end marker
                      (\<[^\<\>]*?\>)?       # First tag after footnote
@@ -110,7 +110,6 @@ def check_that_all_footnotes_are_in_html(text):
     else:
         print("Alle Fußnoten gefunden")
         return True
-
 
 
 def main(*args):
