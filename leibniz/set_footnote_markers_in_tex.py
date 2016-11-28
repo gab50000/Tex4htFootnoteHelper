@@ -116,6 +116,8 @@ def main(*args):
         text = get_text_without_comments(tf)
         modified = find_next_environment(r"edtext", "edtext", text)
         text_modified = "".join(modified)
+        modified = find_next_environment(r"lemma", "lemma", text_modified)
+        text_modified = "".join(modified)
         modified = find_next_environment(r"[ABC]footnote", "footnote", text_modified)
         text_modified = "".join(modified)
         text_modified = fn_enumerator.enumerate_markers(text_modified)
